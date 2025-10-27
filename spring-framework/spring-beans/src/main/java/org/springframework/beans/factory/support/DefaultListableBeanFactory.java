@@ -778,9 +778,7 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 	}
 
 
-	//---------------------------------------------------------------------
-	// Implementation of BeanDefinitionRegistry interface
-	//---------------------------------------------------------------------
+	//BeanDefinitionRegistry 接口的实现
 
 	@Override
 	public void registerBeanDefinition(String beanName, BeanDefinition beanDefinition)
@@ -800,7 +798,7 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 		}
 
 		BeanDefinition existingDefinition = this.beanDefinitionMap.get(beanName);
-		if (existingDefinition != null) {
+		if (existingDefinition != null) {//若档案馆中有该bean的定义信息
 			if (!isAllowBeanDefinitionOverriding()) {
 				throw new BeanDefinitionStoreException(beanDefinition.getResourceDescription(), beanName,
 						"Cannot register bean definition [" + beanDefinition + "] for bean '" + beanName +
@@ -830,11 +828,11 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 			}
 			this.beanDefinitionMap.put(beanName, beanDefinition);
 		}
-		else {
+		else {//如果档案光中没有该bean的定义信息
 			if (hasBeanCreationStarted()) {
 				// Cannot modify startup-time collection elements anymore (for stable iteration)
 				synchronized (this.beanDefinitionMap) {
-					this.beanDefinitionMap.put(beanName, beanDefinition);
+					this.beanDefinitionMap.put(beanName, beanDefinition);//注册
 					List<String> updatedDefinitions = new ArrayList<>(this.beanDefinitionNames.size() + 1);
 					updatedDefinitions.addAll(this.beanDefinitionNames);
 					updatedDefinitions.add(beanName);

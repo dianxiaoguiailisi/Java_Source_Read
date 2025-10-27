@@ -76,10 +76,8 @@ public class ClassPathXmlApplicationContext extends AbstractXmlApplicationContex
 	}
 
 	/**
-	 * Create a new ClassPathXmlApplicationContext, loading the definitions
-	 * from the given XML file and automatically refreshing the context.
-	 * @param configLocation resource location
-	 * @throws BeansException if context creation failed
+	 * 创建一个新的 ClassPathXmlApplicationContext，加载定义，并自动刷新上下文。
+	 * @param configLocation 资源位置
 	 */
 	public ClassPathXmlApplicationContext(String configLocation) throws BeansException {
 		this(new String[] {configLocation}, true, null);
@@ -123,25 +121,26 @@ public class ClassPathXmlApplicationContext extends AbstractXmlApplicationContex
 		this(configLocations, refresh, null);
 	}
 
-	/**
-	 * Create a new ClassPathXmlApplicationContext with the given parent,
-	 * loading the definitions from the given XML files.
-	 * @param configLocations array of resource locations
-	 * @param refresh whether to automatically refresh the context,
-	 * loading all bean definitions and creating all singletons.
-	 * Alternatively, call refresh manually after further configuring the context.
-	 * @param parent the parent context
-	 * @throws BeansException if context creation failed
-	 * @see #refresh()
+/**
+	 * 使用给定的父级创建一个新的 ClassPathXmlApplicationContext，
+	 * 从给定的 XML 文件加载定义。
+	 * @param资源位置的 configLocations 数组
+	 * @param刷新是否自动刷新上下文，
+	 * 加载所有 Bean 定义并创建所有单例。
+	 * 或者，在进一步配置上下文后手动调用刷新。
+	 * @param父上下文的父级
+	 * 如果上下文创建失败，则@throws BeansException
+	 * @see #refresh（）
 	 */
 	public ClassPathXmlApplicationContext(
 			String[] configLocations, boolean refresh, @Nullable ApplicationContext parent)
 			throws BeansException {
-
-		super(parent);
-		setConfigLocations(configLocations);
+//Spring 支持容器的层级结构（父子容器）。子容器可以访问父容器中的 Bean，但父容器不能访问子容器的 Bean。
+//常用于分层架构（如 Web 层容器作为子容器，业务层容器作为父容器），避免 Bean 定义冲突，同时实现资源隔离。
+		super(parent);// 调用父类的构造器，将传入的 parent（父容器）保存到当前容器中
+		setConfigLocations(configLocations);// 设置配置文件路径
 		if (refresh) {
-			refresh();
+			refresh();//刷新容器:容器全生命周期流程：包含首次初始化 + 运行中重建
 		}
 	}
 

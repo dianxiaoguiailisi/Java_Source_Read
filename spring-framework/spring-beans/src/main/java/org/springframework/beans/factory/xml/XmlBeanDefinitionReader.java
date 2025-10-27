@@ -51,22 +51,22 @@ import org.springframework.util.xml.SimpleSaxErrorHandler;
 import org.springframework.util.xml.XmlValidationModeDetector;
 
 /**
- * Bean definition reader for XML bean definitions.
- * Delegates the actual XML document reading to an implementation
- * of the {@link BeanDefinitionDocumentReader} interface.
+ * 用于 XML Bean 定义的 Bean 定义阅读器。
+ * 将实际的 XML 文档读取委托给实现
+ * 的 {@link BeanDefinitionDocumentReader} 接口。
  *
- * <p>Typically applied to a
+ * <p>通常应用于
  * {@link org.springframework.beans.factory.support.DefaultListableBeanFactory}
- * or a {@link org.springframework.context.support.GenericApplicationContext}.
+ * 或 {@link org.springframework.context.support.GenericApplicationContext}。
  *
- * <p>This class loads a DOM document and applies the BeanDefinitionDocumentReader to it.
- * The document reader will register each bean definition with the given bean factory,
- * talking to the latter's implementation of the
- * {@link org.springframework.beans.factory.support.BeanDefinitionRegistry} interface.
+ * <p>此类加载一个 DOM 文档并将 BeanDefinitionDocumentReader 应用于它。
+ * 文档阅读器将向给定的 bean 工厂注册每个 bean 定义，
+ * 谈到后者对
+ * {@link org.springframework.beans.factory.support.BeanDefinitionRegistry} 接口。
  *
  * @author Juergen Hoeller
- * @author Rob Harrop
- * @author Chris Beams
+ * @author罗布·哈罗普
+ * @author克里斯·比姆斯
  * @since 26.11.2003
  * @see #setDocumentReaderClass
  * @see BeanDefinitionDocumentReader
@@ -388,7 +388,7 @@ public class XmlBeanDefinitionReader extends AbstractBeanDefinitionReader {
 	protected int doLoadBeanDefinitions(InputSource inputSource, Resource resource)
 			throws BeanDefinitionStoreException {
 		try {
-			Document doc = doLoadDocument(inputSource, resource);
+			Document doc = doLoadDocument(inputSource, resource);//使用dom工具将整个xml文件解析成document对象并传递给registerBeanDefinitions
 			return registerBeanDefinitions(doc, resource);
 		}
 		catch (BeanDefinitionStoreException ex) {
@@ -490,22 +490,12 @@ public class XmlBeanDefinitionReader extends AbstractBeanDefinitionReader {
 	}
 
 	/**
-	 * Register the bean definitions contained in the given DOM document.
-	 * Called by {@code loadBeanDefinitions}.
-	 * <p>Creates a new instance of the parser class and invokes
-	 * {@code registerBeanDefinitions} on it.
-	 * @param doc the DOM document
-	 * @param resource the resource descriptor (for context information)
-	 * @return the number of bean definitions found
-	 * @throws BeanDefinitionStoreException in case of parsing errors
-	 * @see #loadBeanDefinitions
-	 * @see #setDocumentReaderClass
-	 * @see BeanDefinitionDocumentReader#registerBeanDefinitions
+	 * 使用BeanDefinitionDocumentReader注册给定document对象中包含的 bean 定义。
 	 */
 	public int registerBeanDefinitions(Document doc, Resource resource) throws BeanDefinitionStoreException {
 		BeanDefinitionDocumentReader documentReader = createBeanDefinitionDocumentReader();
 		int countBefore = getRegistry().getBeanDefinitionCount();
-		documentReader.registerBeanDefinitions(doc, createReaderContext(resource));
+		documentReader.registerBeanDefinitions(doc, createReaderContext(resource));//注册Bean的定义信息
 		return getRegistry().getBeanDefinitionCount() - countBefore;
 	}
 

@@ -26,33 +26,33 @@ import org.springframework.context.ApplicationContextException;
 import org.springframework.lang.Nullable;
 
 /**
- * Base class for {@link org.springframework.context.ApplicationContext}
- * implementations which are supposed to support multiple calls to {@link #refresh()},
- * creating a new internal bean factory instance every time.
- * Typically (but not necessarily), such a context will be driven by
- * a set of config locations to load bean definitions from.
+ * {@link org.springframework.context.ApplicationContext} 的基类
+ * 应该支持对 {@link #refresh（）} 的多次调用的实现，
+ * 每次创建一个新的内部 bean 工厂实例。
+ * 通常（但不一定），这样的上下文将由
+ * 一组用于加载 Bean 定义的配置位置。
  *
- * <p>The only method to be implemented by subclasses is {@link #loadBeanDefinitions},
- * which gets invoked on each refresh. A concrete implementation is supposed to load
- * bean definitions into the given
- * {@link org.springframework.beans.factory.support.DefaultListableBeanFactory},
- * typically delegating to one or more specific bean definition readers.
+ * <p>子类实现的唯一方法是 {@link #loadBeanDefinitions}，
+ * 每次刷新时都会调用。一个具体的实现应该加载
+ * bean 定义到给定的
+ * {@link org.springframework.beans.factory.support.DefaultListableBeanFactory}，
+ * 通常委托给一个或多个特定的 bean 定义读者。
  *
- * <p><b>Note that there is a similar base class for WebApplicationContexts.</b>
+ * <p><b>请注意，WebApplicationContexts 有一个类似的基类。</b>
  * {@link org.springframework.web.context.support.AbstractRefreshableWebApplicationContext}
- * provides the same subclassing strategy, but additionally pre-implements
- * all context functionality for web environments. There is also a
- * pre-defined way to receive config locations for a web context.
+ * 提供了相同的子类化策略，但额外预实现了
+ * Web 环境的所有上下文功能。还有一个
+ * 接收 Web 上下文配置位置的预定义方式。
  *
- * <p>Concrete standalone subclasses of this base class, reading in a
- * specific bean definition format, are {@link ClassPathXmlApplicationContext}
- * and {@link FileSystemXmlApplicationContext}, which both derive from the
- * common {@link AbstractXmlApplicationContext} base class;
+ * <p>此基类的具体独立子类，在
+ * 特定的 bean 定义格式，是 {@link ClassPathXmlApplicationContext}
+ * 和 {@link FileSystemXmlApplicationContext}，它们都派生自
+ * common {@link AbstractXmlApplicationContext} 基类;
  * {@link org.springframework.context.annotation.AnnotationConfigApplicationContext}
- * supports {@code @Configuration}-annotated classes as a source of bean definitions.
+ * 支持 {@code @Configuration} 注释的类作为 bean 定义的源。
  *
  * @author Juergen Hoeller
- * @author Chris Beams
+ * @author克里斯·比姆斯
  * @since 1.1.3
  * @see #loadBeanDefinitions
  * @see org.springframework.beans.factory.support.DefaultListableBeanFactory
@@ -124,10 +124,10 @@ public abstract class AbstractRefreshableApplicationContext extends AbstractAppl
 			closeBeanFactory();
 		}
 		try {
-			DefaultListableBeanFactory beanFactory = createBeanFactory();
-			beanFactory.setSerializationId(getId());
+			DefaultListableBeanFactory beanFactory = createBeanFactory();//创建保存所有bean定义信息的档案馆
+			beanFactory.setSerializationId(getId());//为档案馆赋值唯一ID
 			customizeBeanFactory(beanFactory);
-			loadBeanDefinitions(beanFactory);
+			loadBeanDefinitions(beanFactory);//加载所有bean的定义信息就是xml中配置的bean
 			this.beanFactory = beanFactory;
 		}
 		catch (IOException ex) {

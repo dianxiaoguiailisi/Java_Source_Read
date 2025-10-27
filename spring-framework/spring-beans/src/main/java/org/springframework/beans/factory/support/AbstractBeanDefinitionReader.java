@@ -219,7 +219,7 @@ public abstract class AbstractBeanDefinitionReader implements EnvironmentCapable
 		if (resourceLoader instanceof ResourcePatternResolver) {
 			// Resource pattern matching available.
 			try {
-				Resource[] resources = ((ResourcePatternResolver) resourceLoader).getResources(location);
+				Resource[] resources = ((ResourcePatternResolver) resourceLoader).getResources(location);//得到配置文件的资源（策略模式）
 				int loadCount = loadBeanDefinitions(resources);
 				if (actualResources != null) {
 					for (Resource resource : resources) {
@@ -254,8 +254,8 @@ public abstract class AbstractBeanDefinitionReader implements EnvironmentCapable
 	public int loadBeanDefinitions(String... locations) throws BeanDefinitionStoreException {
 		Assert.notNull(locations, "Location array must not be null");
 		int counter = 0;
-		for (String location : locations) {
-			counter += loadBeanDefinitions(location);
+		for (String location : locations) {//逐个加载每一个配置文件
+			counter += loadBeanDefinitions(location);//递归调用
 		}
 		return counter;
 	}

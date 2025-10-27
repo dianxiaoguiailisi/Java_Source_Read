@@ -7,4 +7,7 @@
 	<bean class = "com.zx.spring.Bean.Cat" id="cat">
 		<property name="name" value="张三的猫"/>
 	</bean>
+	<bean class = "com.zx.spring.Bean.Person" id ="person">
+		<property name="name" value="张三"></property>
+	</bean>
 </beans>

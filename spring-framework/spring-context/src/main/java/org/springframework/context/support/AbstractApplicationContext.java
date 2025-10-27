@@ -516,41 +516,41 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 	@Override
 	public void refresh() throws BeansException, IllegalStateException {
 		synchronized (this.startupShutdownMonitor) {
-			// Prepare this context for refreshing.
+			//做刷新前的准备工作
 			prepareRefresh();
-
-			// Tell the subclass to refresh the internal bean factory.
+			//第一次刷新时：创建全新的 BeanFactory，并加载配置文件（如 XML）中的 Bean 定义到 BeanFactory 中
+			//非首次刷新时：销毁旧的 BeanFactory 和所有已创建的 Bean，再创建新的 BeanFactory（实现 “重启” 效果）。
 			ConfigurableListableBeanFactory beanFactory = obtainFreshBeanFactory();
 
-			// Prepare the bean factory for use in this context.
+			// 配置 BeanFactory：设置容器上下文信息
 			prepareBeanFactory(beanFactory);
 
 			try {
-				// Allows post-processing of the bean factory in context subclasses.
+				// BeanFactory 后置处理
 				postProcessBeanFactory(beanFactory);
 
-				// Invoke factory processors registered as beans in the context.
+				// 执行 BeanFactory 后置处理器：修改 Bean 定义
 				invokeBeanFactoryPostProcessors(beanFactory);
 
-				// Register bean processors that intercept bean creation.
+				// 注册 Bean 后置处理器：增强 Bean 实例化过程
 				registerBeanPostProcessors(beanFactory);
 
-				// Initialize message source for this context.
+				// 初始化消息源：支持国际化
 				initMessageSource();
 
-				// Initialize event multicaster for this context.
+				// 初始化事件多播器：处理事件发布
 				initApplicationEventMulticaster();
 
-				// Initialize other special beans in specific context subclasses.
+				// 初始化特殊 Bean（可选）
 				onRefresh();
 
-				// Check for listener beans and register them.
+				// 注册事件监听器：关联监听器与事件
 				registerListeners();
 
-				// Instantiate all remaining (non-lazy-init) singletons.
+				// 实例化所有非懒加载单例 Bean：核心中的核心
 				finishBeanFactoryInitialization(beanFactory);
 
-				// Last step: publish corresponding event.
+				// 完成刷新：发布容器就绪事件
 				finishRefresh();
 			}
 
@@ -624,13 +624,19 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 	}
 
 	/**
-	 * Tell the subclass to refresh the internal bean factory.
-	 * @return the fresh BeanFactory instance
-	 * @see #refreshBeanFactory()
-	 * @see #getBeanFactory()
+	 * 告诉子类刷新内部 bean 工厂。这里的刷新就是制造
+	 * 这是 “模板方法模式” 的典型应用 —— 父类（AbstractApplicationContext）定义流程框架，子类（如 AbstractRefreshableApplicationContext）实现具体逻辑。
+	 * 父类（AbstractApplicationContext）通过 obtainFreshBeanFactory() 定义了 “刷新→获取→返回” 的固定流程步骤，同时用抽象方法（refreshBeanFactory()、getBeanFactory()）预留了具体实现的入口；子类（AbstractRefreshableApplicationContext）通过实现这些抽象方法，
+	 * 填充 “创建工厂、加载配置、持有实例” 的细节。
+	 * AbstractApplicationContext 是 “流程定义者”，AbstractRefreshableApplicationContext 是 “具体实现者”，ClassPathXmlApplicationContext 是 “使用者”。
+	 * @return新的 BeanFactory 实例
+	 * @see #refreshBeanFactory（）
+	 * @see #getBeanFactory（）
 	 */
 	protected ConfigurableListableBeanFactory obtainFreshBeanFactory() {
+		// 步骤1：刷新 BeanFactory（具体实现由子类完成）
 		refreshBeanFactory();
+		//步骤2：获取刷新后的 BeanFactory（具体实现由子类完成）
 		ConfigurableListableBeanFactory beanFactory = getBeanFactory();
 		if (logger.isDebugEnabled()) {
 			logger.debug("Bean factory for " + getDisplayName() + ": " + beanFactory);

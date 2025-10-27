@@ -40,20 +40,20 @@ import org.springframework.util.ResourceUtils;
 import org.springframework.util.StringUtils;
 
 /**
- * Default implementation of the {@link BeanDefinitionDocumentReader} interface that
- * reads bean definitions according to the "spring-beans" DTD and XSD format
- * (Spring's default XML bean definition format).
+ * {@link BeanDefinitionDocumentReader} 接口的默认实现，该接口
+ * 根据“spring-beans”DTD 和 XSD 格式读取 bean 定义
+ *（Spring 的默认 XML bean 定义格式）。
  *
- * <p>The structure, elements, and attribute names of the required XML document
- * are hard-coded in this class. (Of course a transform could be run if necessary
- * to produce this format). {@code <beans>} does not need to be the root
- * element of the XML document: this class will parse all bean definition elements
- * in the XML file, regardless of the actual root element.
+ * <p>所需 XML 文档的结构、元素和属性名称
+ * 在此类中硬编码。（当然，如有必要，可以运行转换
+ * 来生成此格式）。{@code <beans>} 不需要是根
+ * XML 文档的元素：此类将解析所有 bean 定义元素
+ * 在 XML 文件中，无论实际的根元素如何。
  *
- * @author Rod Johnson
+ * @author罗德·约翰逊
  * @author Juergen Hoeller
- * @author Rob Harrop
- * @author Erik Wiersma
+ * @author罗布·哈罗普
+ * @author 埃里克·维尔斯马
  * @since 18.12.2003
  */
 public class DefaultBeanDefinitionDocumentReader implements BeanDefinitionDocumentReader {
@@ -120,12 +120,6 @@ public class DefaultBeanDefinitionDocumentReader implements BeanDefinitionDocume
 	 * Register each bean definition within the given root {@code <beans/>} element.
 	 */
 	protected void doRegisterBeanDefinitions(Element root) {
-		// Any nested <beans> elements will cause recursion in this method. In
-		// order to propagate and preserve <beans> default-* attributes correctly,
-		// keep track of the current (parent) delegate, which may be null. Create
-		// the new (child) delegate with a reference to the parent for fallback purposes,
-		// then ultimately reset this.delegate back to its original (parent) reference.
-		// this behavior emulates a stack of delegates without actually necessitating one.
 		BeanDefinitionParserDelegate parent = this.delegate;
 		this.delegate = createDelegate(getReaderContext(), root, parent);
 
@@ -145,7 +139,7 @@ public class DefaultBeanDefinitionDocumentReader implements BeanDefinitionDocume
 		}
 
 		preProcessXml(root);
-		parseBeanDefinitions(root, this.delegate);
+		parseBeanDefinitions(root, this.delegate);//解析dom对象
 		postProcessXml(root);
 
 		this.delegate = parent;
@@ -159,10 +153,10 @@ public class DefaultBeanDefinitionDocumentReader implements BeanDefinitionDocume
 		return delegate;
 	}
 
-	/**
-	 * Parse the elements at the root level in the document:
-	 * "import", "alias", "bean".
-	 * @param root the DOM root element of the document
+/**
+	 * 解析文档中根级别的元素：
+	 * “import”、“alias”、“bean”。
+	 * @param root 文档的 DOM 根元素
 	 */
 	protected void parseBeanDefinitions(Element root, BeanDefinitionParserDelegate delegate) {
 		if (delegate.isDefaultNamespace(root)) {
@@ -171,7 +165,7 @@ public class DefaultBeanDefinitionDocumentReader implements BeanDefinitionDocume
 				Node node = nl.item(i);
 				if (node instanceof Element) {
 					Element ele = (Element) node;
-					if (delegate.isDefaultNamespace(ele)) {
+					if (delegate.isDefaultNamespace(ele)) {//遍历文档中的所有节点
 						parseDefaultElement(ele, delegate);
 					}
 					else {
@@ -184,7 +178,7 @@ public class DefaultBeanDefinitionDocumentReader implements BeanDefinitionDocume
 			delegate.parseCustomElement(root);
 		}
 	}
-
+	//解析标签：bean、import、beans标点并调用不同的方法
 	private void parseDefaultElement(Element ele, BeanDefinitionParserDelegate delegate) {
 		if (delegate.nodeNameEquals(ele, IMPORT_ELEMENT)) {
 			importBeanDefinitionResource(ele);
@@ -297,12 +291,12 @@ public class DefaultBeanDefinitionDocumentReader implements BeanDefinitionDocume
 		}
 	}
 
-	/**
-	 * Process the given bean element, parsing the bean definition
-	 * and registering it with the registry.
+/**
+	 * 处理给定的 bean 元素，解析 bean 定义
+	 * 并将其注册到注册处。
 	 */
 	protected void processBeanDefinition(Element ele, BeanDefinitionParserDelegate delegate) {
-		BeanDefinitionHolder bdHolder = delegate.parseBeanDefinitionElement(ele);
+		BeanDefinitionHolder bdHolder = delegate.parseBeanDefinitionElement(ele);//当前标签完，bean定义信息和名字封装在bdHolder中
 		if (bdHolder != null) {
 			bdHolder = delegate.decorateBeanDefinitionIfRequired(ele, bdHolder);
 			try {
@@ -313,7 +307,7 @@ public class DefaultBeanDefinitionDocumentReader implements BeanDefinitionDocume
 				getReaderContext().error("Failed to register bean definition with name '" +
 						bdHolder.getBeanName() + "'", ele, ex);
 			}
-			// Send registration event.
+			// 只要注册bean成功就发送一个通知事件
 			getReaderContext().fireComponentRegistered(new BeanComponentDefinition(bdHolder));
 		}
 	}

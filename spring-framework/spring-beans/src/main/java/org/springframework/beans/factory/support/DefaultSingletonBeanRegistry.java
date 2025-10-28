@@ -36,30 +36,27 @@ import org.springframework.core.SimpleAliasRegistry;
 import org.springframework.lang.Nullable;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
-
 /**
- * Generic registry for shared bean instances, implementing the
- * {@link org.springframework.beans.factory.config.SingletonBeanRegistry}.
- * Allows for registering singleton instances that should be shared
- * for all callers of the registry, to be obtained via bean name.
+ * 共享 Bean 实例的通用注册表，实现
+ * {@link org.springframework.beans.factory.config.SingletonBeanRegistry}。
+ * 允许注册应共享的单例实例对于注册表的所有调用者，可以通过 Bean 名称获取。
  *
- * <p>Also supports registration of
- * {@link org.springframework.beans.factory.DisposableBean} instances,
- * (which might or might not correspond to registered singletons),
- * to be destroyed on shutdown of the registry. Dependencies between
- * beans can be registered to enforce an appropriate shutdown order.
+ * <p>还支持注册{@link org.springframework.beans.factory.DisposableBean} 实例，
+ *（可能对应于也可能不对应于已注册的单例），
+ * 在注册局关闭时销毁。之间的依赖关系
+ * 可以注册 Bean 以执行适当的关闭命令。
  *
- * <p>This class mainly serves as base class for
- * {@link org.springframework.beans.factory.BeanFactory} implementations,
- * factoring out the common management of singleton bean instances. Note that
- * the {@link org.springframework.beans.factory.config.ConfigurableBeanFactory}
- * interface extends the {@link SingletonBeanRegistry} interface.
+ * <p>该类主要用作
+ * {@link org.springframework.beans.factory.BeanFactory} 实现，
+ * 分解单例 Bean 实例的通用管理。请注意
+ * {@link org.springframework.beans.factory.config.ConfigurableBeanFactory}
+ * 接口扩展了 {@link SingletonBeanRegistry} 接口。
  *
- * <p>Note that this class assumes neither a bean definition concept
- * nor a specific creation process for bean instances, in contrast to
- * {@link AbstractBeanFactory} and {@link DefaultListableBeanFactory}
- * (which inherit from it). Can alternatively also be used as a nested
- * helper to delegate to.
+ * <p>请注意，此类既不假设 bean 定义概念
+ * 也没有 bean 实例的特定创建过程，与
+ * {@link AbstractBeanFactory} 和 {@link DefaultListableBeanFactory}
+ *（继承自它）。也可以用作嵌套
+ * 委托给的助手。
  *
  * @author Juergen Hoeller
  * @since 2.0
@@ -70,7 +67,7 @@ import org.springframework.util.StringUtils;
  */
 public class DefaultSingletonBeanRegistry extends SimpleAliasRegistry implements SingletonBeanRegistry {
 
-	/** Cache of singleton objects: bean name --> bean instance */
+	/** 缓存所有单实例对象，单例对象池 即ioc容器  Cache of singleton objects: bean name --> bean instance */
 	private final Map<String, Object> singletonObjects = new ConcurrentHashMap<>(256);
 
 	/** Cache of singleton factories: bean name --> ObjectFactory */
@@ -165,12 +162,11 @@ public class DefaultSingletonBeanRegistry extends SimpleAliasRegistry implements
 	}
 
 	/**
-	 * Return the (raw) singleton object registered under the given name.
-	 * <p>Checks already instantiated singletons and also allows for an early
-	 * reference to a currently created singleton (resolving a circular reference).
-	 * @param beanName the name of the bean to look for
-	 * @param allowEarlyReference whether early references should be created or not
-	 * @return the registered singleton object, or {@code null} if none found
+	 * 返回在给定名称下注册的（原始）单例对象。
+	 * <p>检查已经实例化的单例，还允许早期对当前创建的单例的引用（解析循环引用）。
+	 * @param bean命名要查找的 bean 的名称
+	 * @param allowEarlyReference 是否应该创建早期引用
+	 * @return已注册的单例对象，如果未找到，则为 {@code null}
 	 */
 	@Nullable
 	protected Object getSingleton(String beanName, boolean allowEarlyReference) {
@@ -191,13 +187,13 @@ public class DefaultSingletonBeanRegistry extends SimpleAliasRegistry implements
 		return singletonObject;
 	}
 
-	/**
-	 * Return the (raw) singleton object registered under the given name,
-	 * creating and registering a new one if none registered yet.
-	 * @param beanName the name of the bean
-	 * @param singletonFactory the ObjectFactory to lazily create the singleton
-	 * with, if necessary
-	 * @return the registered singleton object
+/**
+	 * 返回以给定名称注册的（原始）单例对象，
+	 * 如果尚未注册，则创建并注册一个新帐户。
+	 * @param bean命名 bean 的名称
+	 * @param singletonFactory 将 ObjectFactory 延迟创建单例
+	 * 如有必要，与
+	 * @return注册的单例对象
 	 */
 	public Object getSingleton(String beanName, ObjectFactory<?> singletonFactory) {
 		Assert.notNull(beanName, "Bean name must not be null");
@@ -219,7 +215,7 @@ public class DefaultSingletonBeanRegistry extends SimpleAliasRegistry implements
 					this.suppressedExceptions = new LinkedHashSet<>();
 				}
 				try {
-					singletonObject = singletonFactory.getObject();
+					singletonObject = singletonFactory.getObject();//
 					newSingleton = true;
 				}
 				catch (IllegalStateException ex) {

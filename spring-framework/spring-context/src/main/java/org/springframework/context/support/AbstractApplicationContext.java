@@ -547,7 +547,7 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 				// 注册事件监听器：关联监听器与事件
 				registerListeners();
 
-				// 实例化所有非懒加载单例 Bean：核心中的核心
+				// 实例化所有非懒加载单例 Bean：核心中的核心,即完成bean工厂的初始化
 				finishBeanFactoryInitialization(beanFactory);
 
 				// 完成刷新：发布容器就绪事件
@@ -883,7 +883,7 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 		// Allow for caching all bean definition metadata, not expecting further changes.
 		beanFactory.freezeConfiguration();
 
-		// Instantiate all remaining (non-lazy-init) singletons.
+		// 实例化所有（非 lazy-init）单例。就是对所有的单例执行getbean
 		beanFactory.preInstantiateSingletons();
 	}
 
